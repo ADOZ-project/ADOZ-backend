@@ -6,9 +6,15 @@
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env        # OPENAI_API_KEY 입력 (없으면 규칙 기반 폴백으로 동작)
+cp .env.example .env        # DATABASE_URL, OPENAI_API_KEY 입력 (AI 키가 없으면 규칙 기반 폴백으로 동작)
 uvicorn app.main:app --reload
 ```
+- DB는 MySQL 8. 처음 한 번 MySQL Workbench 등에서 생성 (테이블은 서버 시작 시 자동 생성)
+  ```sql
+  CREATE DATABASE adoz CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+  CREATE USER 'adoz'@'localhost' IDENTIFIED BY '비밀번호';
+  GRANT ALL PRIVILEGES ON adoz.* TO 'adoz'@'localhost';
+  ```
 - API 문서(Swagger): http://localhost:8000/docs  ← 프론트 팀원에게 이 주소 공유
 - 테스트: `python -m pytest -q`
 
@@ -50,5 +56,5 @@ app/
 ## 남은 작업 (TODO)
 - FCM 실제 연동 (`services/notifications.send_push`)
 - 음성 → 텍스트(Whisper): 회의 녹음 업로드 엔드포인트
-- 운영 DB(PostgreSQL) + Alembic 마이그레이션, CORS 도메인 제한, SECRET_KEY 교체
+- Alembic 마이그레이션(현재는 create_all로 테이블 자동 생성), CORS 도메인 제한, SECRET_KEY 교체
 - 업로드 파일 형식 확장(hwp 등)
