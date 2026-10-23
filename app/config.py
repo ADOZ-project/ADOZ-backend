@@ -8,8 +8,11 @@ class Settings(BaseSettings):
     secret_key: str = "dev-secret-change-me"
     access_token_expire_minutes: int = 60 * 24 * 7
 
-    gemini_api_key: str | None = None
-    gemini_model: str = "gemini-flash-latest"
+    # OpenAI 호환 API (Groq 등은 base_url만 바꿔서 사용)
+    openai_api_key: str | None = None
+    openai_model: str = "gpt-5-mini"
+    openai_base_url: str | None = None
+    ai_provider: str = "openai"  # 회의록 ai_source에 기록되는 이름
 
     storage_dir: str = "./storage"
     font_path: str | None = None

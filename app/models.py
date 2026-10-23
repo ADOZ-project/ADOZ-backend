@@ -50,7 +50,7 @@ class Meeting(Base):
     title: Mapped[str] = mapped_column(String(200))
     raw_text: Mapped[str] = mapped_column(Text)
     summary: Mapped[str] = mapped_column(Text, default="")
-    ai_source: Mapped[str] = mapped_column(String(10), default="rule")  # gemini | rule
+    ai_source: Mapped[str] = mapped_column(String(10), default="rule")  # openai | groq | rule
     meeting_date: Mapped[date] = mapped_column(Date)
     confirmed: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
