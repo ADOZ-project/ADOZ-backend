@@ -12,6 +12,13 @@ uvicorn app.main:app --reload
 - API 문서(Swagger): http://localhost:8000/docs  ← 프론트 팀원에게 이 주소 공유
 - 테스트: `python -m pytest -q`
 
+## 시연용 데모 데이터
+```bash
+python scripts/seed_demo.py --reset   # 서버를 끈 상태에서 실행. --reset은 기존 DB 데이터를 모두 지움
+```
+- 팀 1개, 팀원 4명, 최근 4주간 회의록 4개(실제 AI 분석), 할 일 진행/완료, 업로드, 기여도 타임라인 생성
+- 로그인: `dain@adoz.kr`(팀장), `hajun@adoz.kr`, `seoyeon@adoz.kr`, `minjae@adoz.kr` / 비밀번호 `adoz1234!`
+
 ## 핵심 흐름
 1. `POST /auth/register`, `POST /auth/login` → Bearer 토큰
 2. `POST /teams` → 초대 코드 / 팀원은 `POST /teams/join`
