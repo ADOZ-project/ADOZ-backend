@@ -5,7 +5,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from ..config import settings
-from ..models import DONE, DRAFT, ContributionSnapshot, Meeting, Task, TeamMember, Upload, User, Utterance
+from ..models import DONE, DRAFT, REVIEW, ContributionSnapshot, Meeting, Task, TeamMember, Upload, User, Utterance
 from ..timeutil import to_kst_date, today_kst
 
 
@@ -66,6 +66,8 @@ def compute_scores(db: Session, team_id: int) -> list[MemberScore]:
             s.task_points += t.difficulty * (0.5 if late else 1.0)
             evaluated[t.assignee_id] += 1
             on_time_cnt[t.assignee_id] += 0 if late else 1
+        elif t.status == REVIEW:  # 승인 대기: 승인되기 전까지 점수·준수율 모두 보류
+            continue
         elif t.due_date and t.due_date < today:  # 기한이 지났는데 미완료 → 준수율에 반영
             evaluated[t.assignee_id] += 1
     for uid, s in scores.items():

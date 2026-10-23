@@ -40,6 +40,16 @@ class TeamCreate(BaseModel):
     deadline: date | None = None
 
 
+class TeamUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=100)
+    deadline: date | None = None
+    clear_deadline: bool = False
+
+
+class LeaderIn(BaseModel):
+    user_id: int
+
+
 class JoinIn(BaseModel):
     invite_code: str
 
@@ -71,6 +81,18 @@ class TaskOut(ORM):
     difficulty: int
     status: str
     completed_at: datetime | None
+
+
+class TaskCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=300)
+    assignee_id: int | None = None
+    due_date: date | None = None
+    difficulty: int = Field(default=2, ge=1, le=3)
+    meeting_id: int | None = None  # 확정 전 회의록이면 그 회의의 초안(DRAFT)으로 추가
+
+
+class RejectIn(BaseModel):
+    reason: str | None = Field(default=None, max_length=200)
 
 
 class TaskUpdate(BaseModel):

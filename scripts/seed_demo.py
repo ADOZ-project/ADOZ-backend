@@ -172,6 +172,12 @@ def main() -> None:
             db.commit()
 
         run_completions(utcnow())
+        # 시연에서 '완료 승인'을 직접 보여줄 수 있게, 진행 중인 할 일 하나를 승인 대기(REVIEW)로 제출
+        early_uid = next(u for u, st in uid_style.items() if st == "early")
+        doing = db.scalar(select(Task).where(Task.team_id == tid, Task.assignee_id == early_uid, Task.status == DOING))
+        if doing:
+            c.patch(f"/tasks/{doing.id}", json={"status": "DONE"}, headers=h(early_uid)).raise_for_status()
+            print(f"승인 대기: '{doing.title}' (담당 {db.get(User, early_uid).name}) → 다른 팀원 계정으로 승인 시연")
         record_snapshot(db, tid)
 
         print(f"\n팀: {TEAM_NAME} (team_id={tid}, 초대 코드 {team['invite_code']})")

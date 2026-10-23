@@ -6,9 +6,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .database import Base
 from .timeutil import utcnow
 
-# Task.status
-DRAFT, TODO, DOING, DONE = "DRAFT", "TODO", "DOING", "DONE"
-TASK_STATUSES = (DRAFT, TODO, DOING, DONE)
+# Task.status  (REVIEW: 담당자가 완료 제출 → 다른 팀원 승인 대기. completed_at = 제출 시각)
+DRAFT, TODO, DOING, REVIEW, DONE = "DRAFT", "TODO", "DOING", "REVIEW", "DONE"
+TASK_STATUSES = (DRAFT, TODO, DOING, REVIEW, DONE)
 
 
 class User(Base):
