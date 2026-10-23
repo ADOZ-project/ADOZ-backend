@@ -2,7 +2,8 @@ import os
 
 os.environ["DATABASE_URL"] = "sqlite:///./test_hipass.db"
 os.environ["SCHEDULER_ENABLED"] = "false"
-os.environ["OPENAI_API_KEY"] = ""
+os.environ["GEMINI_API_KEY"] = ""
+os.environ["SECRET_KEY"] = "test-secret-key-for-pytest-only-1234567890"
 os.environ["STORAGE_DIR"] = "./test_storage"
 
 import pytest

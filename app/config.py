@@ -8,8 +8,8 @@ class Settings(BaseSettings):
     secret_key: str = "dev-secret-change-me"
     access_token_expire_minutes: int = 60 * 24 * 7
 
-    openai_api_key: str | None = None
-    openai_model: str = "gpt-4o-mini"
+    gemini_api_key: str | None = None
+    gemini_model: str = "gemini-flash-latest"
 
     storage_dir: str = "./storage"
     font_path: str | None = None
