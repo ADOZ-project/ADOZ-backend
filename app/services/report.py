@@ -99,7 +99,7 @@ def build_report(db: Session, team_id: int) -> bytes:
         rate = "-" if s.on_time_rate is None else f"{s.on_time_rate * 100:.0f}%"
         rows.append([_p(x, 9) for x in [s.name, f"{s.total:.1f}", f"{s.speech_share * 100:.1f}",
                                           f"{s.task_share * 100:.1f}", f"{s.upload_share * 100:.1f}", rate,
-                                          f"{s.persona} {s.name}"]])
+                                          s.persona]])
     t = Table(rows, colWidths=[22 * mm, 20 * mm, 20 * mm, 20 * mm, 20 * mm, 20 * mm, 52 * mm], repeatRows=1)
     t.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E8EEF8")),
                            ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#B0B8C8")),
