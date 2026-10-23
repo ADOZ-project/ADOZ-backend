@@ -1,4 +1,4 @@
-# 하이패스 백엔드 (FastAPI)
+# ADOZ 백엔드 (FastAPI)
 
 팀플 회의록 → AI 할 일 배정 → 기여도 측정 → PDF 리포트
 
