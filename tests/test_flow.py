@@ -4,7 +4,7 @@ from datetime import date, timedelta
 from app.database import SessionLocal
 from app.services.notifications import run_daily_reminders
 
-MEETING = """국다인: 이번 발표 주제는 하이패스로 가요. 백엔드 API 설계는 내일까지 제가 끝낼게요.
+MEETING = """국다인: 이번 발표 주제는 ADOZ로 가요. 백엔드 API 설계는 내일까지 제가 끝낼게요.
 박하준: 저는 발표 자료 초안을 금요일까지 만들게요.
 이한결: 다인이가 DB 설계도 맡기로 했던 것 같아요. 저는 경쟁 서비스 조사 정리할게요.
 박하준: 다들 좋아요?

@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from ..config import settings
 from . import parser
 
-log = logging.getLogger("hipass.ai")
+log = logging.getLogger("adoz.ai")
 
 
 @dataclass

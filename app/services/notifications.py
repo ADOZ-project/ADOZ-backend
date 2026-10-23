@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from ..models import DOING, TODO, Notification, Task, User
 from ..timeutil import today_kst
 
-log = logging.getLogger("hipass.push")
+log = logging.getLogger("adoz.push")
 
 MSG = {
     "assigned": ["새 할 일이 도착했어요. 마스코트가 응원합니다!"],
@@ -48,7 +48,7 @@ def notify(db: Session, user_id: int, kind: str, task: Task | None, dedupe_key: 
                         dedupe_key=dedupe_key))
     user = db.get(User, user_id)
     if user:
-        send_push(user, "하이패스", message)
+        send_push(user, "ADOZ", message)
     return True
 
 
