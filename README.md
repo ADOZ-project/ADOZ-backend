@@ -6,7 +6,7 @@
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env        # GEMINI_API_KEY 입력 (없으면 규칙 기반 폴백으로 동작)
+cp .env.example .env        # OPENAI_API_KEY 입력 (없으면 규칙 기반 폴백으로 동작)
 uvicorn app.main:app --reload
 ```
 - API 문서(Swagger): http://localhost:8000/docs  ← 프론트 팀원에게 이 주소 공유
@@ -28,7 +28,7 @@ app/
   models.py          DB 모델        schemas.py  요청/응답
   routers/           auth, teams, meetings, tasks, reports(기여도·PDF)
   services/
-    ai.py            Gemini 분석(JSON 스키마 강제) + 규칙 기반 폴백 + 코멘트
+    ai.py            OpenAI 분석(JSON 스키마 강제) + 규칙 기반 폴백 + 코멘트
     parser.py        화자 분리 / 이름 매칭 / '금요일까지' 같은 기한 파싱
     contribution.py  기여도 계산 (발언 0.3 / 할 일 0.4 / 업로드 0.3, 가중치는 .env로 조정)
     notifications.py 마스코트 멘트 + 푸시 연동 지점(send_push)
