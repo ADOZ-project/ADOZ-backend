@@ -30,6 +30,9 @@ MSG = {
         "팀원이 아니라 전설의 미루기 장인입니까?",
         "마감이 지났어요. 팀원들이 기다리고 있습니다.",
     ],
+    "review": ["팀원이 완료를 제출했어요. 확인하고 승인해 주세요."],
+    "approved": ["팀원이 완료를 승인했어요. 기여도에 반영됩니다."],
+    "rejected": ["팀원이 보완을 요청했어요. 다시 확인해 주세요."],
 }
 
 
@@ -39,11 +42,15 @@ def send_push(user: User, title: str, body: str) -> None:
         log.info("PUSH → user=%s title=%s body=%s", user.id, title, body)
 
 
-def notify(db: Session, user_id: int, kind: str, task: Task | None, dedupe_key: str | None = None) -> bool:
+def notify(db: Session, user_id: int, kind: str, task: Task | None, dedupe_key: str | None = None,
+           note: str | None = None) -> bool:
+    """note: 반려 사유처럼 템플릿 뒤에 덧붙일 문장"""
     if dedupe_key and db.scalar(select(Notification.id).where(Notification.dedupe_key == dedupe_key)):
         return False
     text = random.choice(MSG[kind])
     message = f"[{task.title[:40]}] {text}" if task else text
+    if note:
+        message = f"{message} ({note})"[:500]
     db.add(Notification(user_id=user_id, task_id=task.id if task else None, kind=kind, message=message,
                         dedupe_key=dedupe_key))
     user = db.get(User, user_id)

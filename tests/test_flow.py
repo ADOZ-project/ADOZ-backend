@@ -52,7 +52,8 @@ def test_full_flow(client):
     # 할 일 완료 → 칭찬 알림
     t0 = mine[0]
     assert c.patch(f"/tasks/{t0['id']}", json={"status": "DONE"}, headers=b).status_code == 403  # 남의 할 일
-    assert c.patch(f"/tasks/{t0['id']}", json={"status": "DONE"}, headers=a).json()["status"] == "DONE"
+    assert c.patch(f"/tasks/{t0['id']}", json={"status": "DONE"}, headers=a).json()["status"] == "REVIEW"
+    assert c.post(f"/tasks/{t0['id']}/approve", headers=b).json()["status"] == "DONE"  # 다른 팀원 승인
     assert any(n["kind"] == "praise" for n in c.get("/me/notifications", headers=a).json())
 
     # 업로드(cp949 txt) 글자 수 집계

@@ -83,3 +83,23 @@ def confirm_meeting(meeting_id: int, user: User = Depends(get_current_user), db:
     m.confirmed = True
     db.commit()
     return _meeting_out(m)
+
+
+@router.delete("/meetings/{meeting_id}", status_code=204)
+def delete_meeting(meeting_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """회의록 삭제(작성자 또는 팀장). 발언·초안은 함께 삭제되고, 이미 확정된 할 일은 회의 연결만 끊고 유지"""
+    m = db.get(Meeting, meeting_id)
+    if not m:
+        raise HTTPException(404, "회의록을 찾을 수 없습니다")
+    member = require_member(db, m.team_id, user)
+    if m.created_by != user.id and member.role != "leader":
+        raise HTTPException(403, "회의록은 작성자 또는 팀장만 삭제할 수 있습니다")
+    for t in list(m.tasks):
+        if t.status == DRAFT:
+            db.delete(t)
+        else:
+            t.meeting_id = None
+    team_id = m.team_id
+    db.delete(m)
+    db.commit()
+    record_snapshot(db, team_id)

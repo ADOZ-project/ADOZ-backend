@@ -1,5 +1,6 @@
 """원클릭 공정 기여도 리포트 PDF 생성 (reportlab)"""
 import os
+from datetime import timezone
 from io import BytesIO
 
 from reportlab.graphics.charts.barcharts import VerticalBarChart
@@ -16,7 +17,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..config import settings
-from ..models import DONE, DRAFT, ContributionSnapshot, Meeting, Task, Team
+from ..models import DONE, DRAFT, REVIEW, ContributionSnapshot, Meeting, Task, Team
 from ..timeutil import KST, to_kst_date, today_kst
 from . import ai
 from .contribution import compute_scores
@@ -127,6 +128,8 @@ def build_report(db: Session, team_id: int) -> bytes:
             d = to_kst_date(tk.completed_at)
             late = tk.due_date and d > tk.due_date
             events.append((d, f"{who} - '{tk.title[:60]}' 완료" + (" (기한 초과)" if late else " (기한 내)")))
+        elif tk.status == REVIEW and tk.completed_at:
+            events.append((to_kst_date(tk.completed_at), f"{who} - '{tk.title[:60]}' 완료 제출 (승인 대기)"))
         elif tk.due_date:
             events.append((tk.due_date, f"{who} - '{tk.title[:60]}' 마감 예정/진행 중 ({tk.status})"))
     for d, txt in sorted(events, key=lambda e: e[0]):
@@ -138,14 +141,15 @@ def build_report(db: Session, team_id: int) -> bytes:
         story += [Spacer(1, 4 * mm), _p("5. 기여도 변화 이력", 13), Spacer(1, 2 * mm)]
         by_time: dict = {}
         for sn in snaps:
-            key = sn.calculated_at.replace(tzinfo=None).replace(microsecond=0)
+            at = sn.calculated_at if sn.calculated_at.tzinfo else sn.calculated_at.replace(tzinfo=timezone.utc)
+            key = at.astimezone(KST).replace(tzinfo=None, microsecond=0)
             by_time.setdefault(key, {})[sn.user_id] = sn.total
         keys = sorted(by_time)
         if len(keys) > 8:  # 너무 길면 균등 샘플링
             keys = [keys[round(i * (len(keys) - 1) / 7)] for i in range(8)]
         for k in keys:
             vals = ", ".join(f"{names.get(u, u)} {v:.0f}%" for u, v in by_time[k].items())
-            story.append(_p(f"{k.strftime('%Y-%m-%d %H:%M')} (UTC)  {vals}", 8.5))
+            story.append(_p(f"{k.strftime('%Y-%m-%d %H:%M')}  {vals}", 8.5))
 
     story += [Spacer(1, 6 * mm),
               _p("※ 본 리포트는 활동 로그(회의 발언량, 할 일 수행·마감 준수, 업로드 자료 분량)를 기반으로 자동 생성되었으며, "

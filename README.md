@@ -29,10 +29,20 @@ python scripts/seed_demo.py --reset   # 서버를 끈 상태에서 실행. --res
 1. `POST /auth/register`, `POST /auth/login` → Bearer 토큰
 2. `POST /teams` → 초대 코드 / 팀원은 `POST /teams/join`
 3. `POST /teams/{id}/meetings` : 회의록(`이름: 내용` 줄 형식) → 요약 + 할 일 **초안**(DRAFT)
-4. 초안 수정 `PATCH /tasks/{id}` → `POST /meetings/{id}/confirm` 으로 확정·배정·알림
+4. 초안 수정 `PATCH /tasks/{id}` (AI가 놓친 일은 `POST /teams/{id}/tasks` + `meeting_id`로 초안 추가)
+   → `POST /meetings/{id}/confirm` 으로 확정·배정·알림
 5. `GET /me/tasks`, `PATCH /tasks/{id}` (status: TODO/DOING/DONE), `POST /tasks/{id}/uploads`
-6. `GET /teams/{id}/contributions` (+ `/history`)
-7. `POST /teams/{id}/report` → PDF
+6. **완료 승인**: 담당자가 DONE으로 바꾸면 `REVIEW`(승인 대기) → 다른 팀원이 `POST /tasks/{id}/approve` 해야 DONE·기여도 반영
+   (`POST /tasks/{id}/reject` + `{"reason"}` 은 DOING으로 되돌림). 마감 준수는 제출 시각 기준, 1인 팀은 바로 DONE
+7. `GET /teams/{id}/contributions` (+ `/history`, 시각은 UTC)
+8. `POST /teams/{id}/report` → PDF
+
+## 그 밖의 API
+- 할 일: `POST /teams/{id}/tasks`(회의 밖 할 일 추가, 팀원은 본인에게만·팀장은 누구에게나), `GET /tasks/{id}`, `DELETE /tasks/{id}`
+- 자료: `GET /tasks/{id}/uploads`, `GET /uploads/{id}/file`(원본 다운로드)
+- 회의록: `DELETE /meetings/{id}`(작성자·팀장, 초안은 함께 삭제되고 확정된 할 일은 유지)
+- 팀: `PATCH /teams/{id}`(이름·마감일, 팀장), `POST /teams/{id}/leader`(팀장 위임),
+  `DELETE /teams/{id}/members/{user_id}`(나가기·내보내기, 끝나지 않은 할 일은 미배정으로)
 
 ## 구조
 ```
