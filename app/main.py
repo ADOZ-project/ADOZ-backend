@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 def _reminder_job():
     with SessionLocal() as db:
         n = run_daily_reminders(db)
-        logging.getLogger("hipass").info("daily reminders sent: %s", n)
+        logging.getLogger("adoz").info("daily reminders sent: %s", n)
 
 
 @asynccontextmanager
@@ -34,8 +34,9 @@ async def lifespan(app: FastAPI):
         scheduler.shutdown(wait=False)
 
 
-app = FastAPI(title="하이패스 API", version="0.1.0", lifespan=lifespan)
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])  # 배포 시 도메인 제한
+app = FastAPI(title="ADOZ API", version="0.1.0", lifespan=lifespan)
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],
+                   expose_headers=["Content-Disposition"])  # 배포 시 도메인 제한
 for r in (auth.router, teams.router, meetings.router, tasks.router, reports.router):
     app.include_router(r)
 

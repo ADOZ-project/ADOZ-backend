@@ -85,7 +85,7 @@ def build_report(db: Session, team_id: int) -> bytes:
     doc = SimpleDocTemplate(buf, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
                             bottomMargin=16 * mm, title=f"{team.name} 기여도 리포트")
     story = [
-        _p("하이패스 팀플 공정 기여도 리포트", 18, colors.HexColor("#3F5FA8")),
+        _p("ADOZ 팀플 공정 기여도 리포트", 18, colors.HexColor("#3F5FA8")),
         Spacer(1, 3 * mm),
         _p(f"팀명: {team.name}   |   생성일: {today_kst().isoformat()}   |   팀원 {len(scores)}명", 10),
         Spacer(1, 6 * mm),

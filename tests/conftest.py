@@ -1,6 +1,6 @@
 import os
 
-os.environ["DATABASE_URL"] = "sqlite:///./test_hipass.db"
+os.environ["DATABASE_URL"] = "sqlite:///./test_adoz.db"
 os.environ["SCHEDULER_ENABLED"] = "false"
 os.environ["OPENAI_API_KEY"] = ""
 os.environ["SECRET_KEY"] = "test-secret-key-for-pytest-only-1234567890"
